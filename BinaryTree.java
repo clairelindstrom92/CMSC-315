@@ -1,6 +1,7 @@
 // Claire Lindstrom Binary Tree 
 
 import java.util.List;
+import java.util.Stack;
 import java.util.ArrayList;
 
 public class BinaryTree {
@@ -64,6 +65,129 @@ public class BinaryTree {
         return node;
     }
 
+    public boolean isBalanced() {
+        return isBalancedHelper(root) != -1; // Call the helper method with the root node
+    }
+
+    private int isBalancedHelper(Node node) {
+        if (node == null) {
+            return 0; // Base case: reached the leaf node
+        }
+
+        int leftHeight = isBalancedHelper(node.left);
+        if (leftHeight == -1) {
+            return -1; // Left subtree is not balanced
+        }
+
+        int rightHeight = isBalancedHelper(node.right);
+        if (rightHeight == -1) {
+            return -1; // Right subtree is not balanced
+        }
+
+        // Check if the current node is balanced
+        if (Math.abs(leftHeight - rightHeight) > 1) {
+            return -1;
+        }
+
+        // Return the height of the current node
+        return Math.max(leftHeight, rightHeight) + 1;
+    }
+
+    public boolean isFull() {
+        return isFullHelper(root);
+    }
+
+    private boolean isFullHelper(Node node) {
+        // Base case: leaf nodes are always considered full
+        if (node == null) {
+            return true;
+        }
+
+        // Check if the current node has either 0 or 2 children
+        if ((node.left == null && node.right != null) || (node.left != null && node.right == null)) {
+            return false;
+        }
+
+        // Recursively check if both left and right subtrees are full
+        return isFullHelper(node.left) && isFullHelper(node.right);
+    }
+
+    public boolean isProper() {
+        return isProperHelper(root);
+    }
+
+    private boolean isProperHelper(Node node) {
+        // Base case: an empty tree is considered proper
+        if (node == null) {
+            return true;
+        }
+
+        // Check if the current node has either 0 or 2 children
+        if ((node.left == null && node.right != null) || (node.left != null && node.right == null)) {
+            return false;
+        }
+
+        // Recursively check if both left and right subtrees are proper
+        return isProperHelper(node.left) && isProperHelper(node.right);
+    }
+
+    public int getHeight() {
+        return getHeightHelper(root);
+    }
+
+    private int getHeightHelper(Node node) {
+        // Base case: an empty tree has height 0
+        if (node == null) {
+            return 0;
+        }
+
+        // Recursively calculate the height of the left and right subtrees
+        int leftHeight = getHeightHelper(node.left);
+        int rightHeight = getHeightHelper(node.right);
+
+        // Return the maximum height among the left and right subtrees + 1 (for the
+        // current node)
+        return Math.max(leftHeight, rightHeight) + 1;
+    }
+
+    public int getNodeCount() {
+        return getNodeCountHelper(root);
+    }
+
+    private int getNodeCountHelper(Node node) {
+        // Base case: an empty tree has 0 nodes
+        if (node == null) {
+            return 0;
+        }
+
+        // Recursively calculate the number of nodes in the left and right subtrees
+        int leftNodeCount = getNodeCountHelper(node.left);
+        int rightNodeCount = getNodeCountHelper(node.right);
+
+        // Return the total number of nodes by adding the counts of left and right
+        // subtrees and 1 for the current node
+        return leftNodeCount + rightNodeCount + 1;
+    }
+
+    public String inorderTraversal() {
+        if (root == null) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        Stack<Node> stack = new Stack<>();
+        Node current = root;
+        while (current != null || !stack.isEmpty()) {
+            while (current != null) {
+                stack.push(current);
+                current = current.left;
+            }
+            current = stack.pop();
+            sb.append(current.value).append(" ");
+            current = current.right;
+        }
+        return sb.toString().trim();
+    }
+
     private List<String> splitSubtrees(String str) throws InvalidTreeSyntax {
         List<String> subtrees = new ArrayList<>();
         int openParentheses = 0;
@@ -86,5 +210,9 @@ public class BinaryTree {
         }
 
         return subtrees;
+    }
+
+    public BinaryTreeGui.TreeNode getRoot() {
+        return null;
     }
 }
